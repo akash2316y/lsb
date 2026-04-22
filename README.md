@@ -8,7 +8,7 @@
   <img src="https://telegra.ph/file/42aced60d325f8b1c38b8-4142b15de724c8de88.jpg">
 </p>
 
-_**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ʟɪɴᴋs sʜᴀʀᴇ ʙᴏᴛ](https://t.me/linkssharebot)**_
+_**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ʟɪɴᴋs sʜᴀʀᴇ ʙᴏᴛ](h**_
 
 <p align="center">
 <b>𝗗𝗘𝗣𝗟𝗢𝗬𝗠𝗘𝗡𝗧 𝗠𝗘𝗧𝗛𝗢𝗗𝗦</b>
@@ -104,16 +104,4 @@ _**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ʟɪɴᴋs sʜᴀʀ
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<h3 align="center">
-    ─「 ᴄʀᴇᴅɪᴛs 」─
-</h3>
-
-- <b>[sᴀʜɪʟ](https://github.com/Sahil0976/)  ➻  [ʙᴀsᴇ ᴄᴏᴅᴇ](https://github.com/Sahil0976/Links-Sharing) </b>
-- <b>[ᴏʙɪᴛᴏ](https://github.com/proobito)  ➻  [sᴏᴍᴇᴛʜɪɴɢ](https://github.com/ProYato/LinkShareBot) </b>
-- <b>[ʏᴀᴛᴏ](https://github.com/proyato)  ➻  [ᴀᴅᴅᴇᴅ ғᴇᴀᴛᴜʀᴇs](https://github.com/proyato) </b>
-
- 
-<b>ᴀɴᴅ ᴀʟʟ [ᴛʜᴇ ᴄᴏɴᴛʀɪʙᴜᴛᴏʀs](https://github.com/Codeflix-Bots/linksharebot/graphs/contributors) ᴡʜᴏ ʜᴇʟᴩᴇᴅ ɪɴ ᴍᴀᴋɪɴɢ ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ᴜsᴇғᴜʟ & ᴩᴏᴡᴇʀғᴜʟ 🖤 </b>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
