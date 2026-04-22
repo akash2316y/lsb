@@ -1,0 +1,18 @@
+# Telegram Bot Config
+TG_BOT_TOKEN=
+APP_ID=
+API_HASH=
+
+# Channel & Owner
+DATABASE_CHANNEL=
+OWNER_ID=
+
+# Server
+PORT=8000
+
+# Admins (space separated if multiple)
+ADMINS=7889947993
+
+# Database
+DATABASE_URL=
+DATABASE_NAME=
