@@ -1,29 +1,10 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 <h2 align="center">
     ──「 ʟɪɴᴋs sʜᴀʀᴇ ʙᴏᴛ 」──
 </h2>
 
-<p align="center">
-  <img src="https://telegra.ph/file/42aced60d325f8b1c38b8-4142b15de724c8de88.jpg">
-</p>
 
-_**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ʟɪɴᴋs sʜᴀʀᴇ ʙᴏᴛ](h**_
-
-<p align="center">
-<b>𝗗𝗘𝗣𝗟𝗢𝗬𝗠𝗘𝗡𝗧 𝗠𝗘𝗧𝗛𝗢𝗗𝗦</b>
-</p>
-
-<h3 align="center">
-    ─「 ᴅᴇᴩʟᴏʏ ᴏɴ ʜᴇʀᴏᴋᴜ 」─
-</h3>
-
-<p align="center"><a href="https://dashboard.heroku.com/new?template=https://github.com/ProYato/LinkShareBot"> <img src="https://img.shields.io/badge/Deploy%20On%20Heroku-black?style=for-the-badge&logo=heroku" width="220" height="38.45"/></a></p>
-
-<h3 align="center">
-    ─「 ᴅᴇᴘʟᴏʏ ᴏɴ ᴋᴏʏᴇʙ 」─
-</h3>
-<p align="center"><a href="https://app.koyeb.com/deploy?type=git&https://github.com/ProYato/LinkShareBot=&branch=main&name=AutoReanemBot"> <img src="https://img.shields.io/badge/Deploy%20On%20Koyeb-black?style=for-the-badge&logo=Koyeb" width="220" height="38.45"/></a></p>
 </h3>
 
 ## ғᴇᴀᴛᴜʀᴇs
