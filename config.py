@@ -45,7 +45,7 @@ HELP = os.environ.get("HELP_MESSAGE", "<b></b>")
 ABOUT = os.environ.get("ABOUT_MESSAGE", "<b><blockquote expandable>This bot is developed to securely share Telegram channel links with temporary invite links, protecting your channels from copyright issues.</b>")
 
 
-ABOUT_TXT = """<b><blockquote>›› ᴘʀᴏᴍᴏ : <a href='http://t.me/Kakuzoo0'>ᴏᴡɴᴇʀ</a></b></blockquote>"""
+ABOUT_TXT = """<b><blockquote>›› ᴘʀᴏᴍᴏ : <a href='http://t.me/htkuky'>ᴏᴡɴᴇʀ</a></b></blockquote>"""
 
 CHANNELS_TXT = """<b>›› ᴀɴɪᴍᴇ ᴄʜᴀɴɴᴇʟ</b> """
 
