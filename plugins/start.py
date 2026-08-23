@@ -34,8 +34,9 @@ cancel_lock = asyncio.Lock()
 is_canceled = False
 
 async def build_start_keyboard() -> InlineKeyboardMarkup:
-    """Build the start-message keyboard: owner-added channel button rows on
-    top, followed by the fixed About/Close row."""
+    """Build the start-message keyboard: a single 'Channels' button (shown
+    only if the owner has added any via /addbutton) which opens a screen
+    listing those buttons, plus the fixed About/Close row."""
     keyboard = []
     try:
         custom_rows = await get_start_button_rows()
@@ -43,8 +44,8 @@ async def build_start_keyboard() -> InlineKeyboardMarkup:
         print(f"Error loading custom start buttons: {e}")
         custom_rows = []
 
-    for row in custom_rows:
-        keyboard.append([InlineKeyboardButton(btn["name"], url=btn["url"]) for btn in row])
+    if custom_rows:
+        keyboard.append([InlineKeyboardButton("• ᴄʜᴀɴɴᴇʟs •", callback_data="channels_txt")])
 
     keyboard.append([
         InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data="about_txt"),
@@ -652,10 +653,39 @@ async def about_callback(client: Bot, callback_query: CallbackQuery):
     )
 
 
+@Bot.on_callback_query(filters.regex("channels_txt"))
+async def channels_callback(client: Bot, callback_query: CallbackQuery):
+    await callback_query.answer()
+
+    rows = await get_start_button_rows()
+    keyboard = [[InlineKeyboardButton(btn["name"], url=btn["url"]) for btn in row] for row in rows]
+    keyboard.append([InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="back_start")])
+
+    text = CHANNELS_TXT if rows else CHANNELS_TXT + "\n\n<i>No channels added yet.</i>"
+
+    await callback_query.message.edit_text(
+        text,
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
 @Bot.on_callback_query(filters.regex("back_start"))
 async def back_to_start(client: Bot, callback_query: CallbackQuery):
     await callback_query.answer()
 
+    user = callback_query.from_user
+    start_caption = START_MSG.format(
+        first=user.first_name,
+        last=user.last_name,
+        username=None if not user.username else '@' + user.username,
+        mention=user.mention,
+        id=user.id
+    )
     inline_buttons = await build_start_keyboard()
 
-    await callback_query.message.edit_reply_markup(reply_markup=inline_buttons)
+    await callback_query.message.edit_text(
+        start_caption,
+        parse_mode=ParseMode.HTML,
+        reply_markup=inline_buttons
+    )
