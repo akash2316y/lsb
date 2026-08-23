@@ -23,6 +23,10 @@ from helper_func import *
 # Create a lock dictionary for each channel to prevent concurrent link generation
 channel_locks = defaultdict(asyncio.Lock)
 
+# START_PIC can hold multiple space-separated URLs; split into a list so we
+# can send a different random image each time instead of the whole string.
+START_PIC_LIST = [url.strip() for url in START_PIC.split() if url.strip()]
+
 user_banned_until = {}
 
 # Broadcast variables
@@ -185,8 +189,9 @@ async def start_command(client: Bot, message: Message):
         )
 
         try:
+            random_pic = random.choice(START_PIC_LIST) if START_PIC_LIST else START_PIC
             await message.reply_photo(
-                photo=START_PIC,
+                photo=random_pic,
                 caption=start_caption,
                 reply_markup=inline_buttons,
                 parse_mode=ParseMode.HTML,
