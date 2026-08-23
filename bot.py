@@ -1,9 +1,9 @@
-# +++ Modified By Yato [telegram username: @i_killed_my_clan & @ProYato] +++ # aNDI BANDI SANDI JISNE BHI CREDIT HATAYA USKI BANDI RAndi 
 import asyncio
 import sys
 from datetime import datetime
 from pyrogram import Client
 from pyrogram.enums import ParseMode
+from pyrogram.errors import PeerIdInvalid
 from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, PORT, OWNER_ID
 from plugins import web_server
 import pyrogram.utils
@@ -39,11 +39,15 @@ class Bot(Client):
                 text="<b><blockquote>🤖 Bot Restarted ♻️</blockquote></b>",
                 parse_mode=ParseMode.HTML
             )
+        except PeerIdInvalid:
+            self.LOGGER(__name__).warning(
+                f"Skipped restart notification: OWNER_ID ({OWNER_ID}) has never sent /start to this bot. "
+                f"Send /start to the bot once from that account and this will work on the next restart."
+            )
         except Exception as e:
             self.LOGGER(__name__).warning(f"Failed to notify owner ({OWNER_ID}) of bot start: {e}")
 
         self.set_parse_mode(ParseMode.HTML)
-        self.LOGGER(__name__).info("Bot Running..!\n\nCreated by \nhttps://t.me/ProObito")
         self.LOGGER(__name__).info(f"{name}")
         self.username = usr_bot_me.username
 
