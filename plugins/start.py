@@ -175,20 +175,30 @@ async def start_command(client: Bot, message: Message):
         wait_msg = await message.reply_text("⏳")
         await asyncio.sleep(0.1)
         await wait_msg.delete()
-        
+
+        start_caption = START_MSG.format(
+            first=message.from_user.first_name,
+            last=message.from_user.last_name,
+            username=None if not message.from_user.username else '@' + message.from_user.username,
+            mention=message.from_user.mention,
+            id=message.from_user.id
+        )
+
         try:
             await message.reply_photo(
                 photo=START_PIC,
-                caption=START_MSG,
+                caption=start_caption,
                 reply_markup=inline_buttons,
-                parse_mode=ParseMode.HTML
+                parse_mode=ParseMode.HTML,
+                quote=True
             )
         except Exception as e:
             print(f"Error sending start picture: {e}")
             await message.reply_text(
-                START_MSG,
+                start_caption,
                 reply_markup=inline_buttons,
-                parse_mode=ParseMode.HTML
+                parse_mode=ParseMode.HTML,
+                quote=True
             )
 
 
@@ -531,16 +541,3 @@ async def back_to_start(client: Bot, callback_query: CallbackQuery):
              InlineKeyboardButton("ᴄʟᴏsᴇ •", callback_data="close")]
         ]
     )
-
-    try:
-        await callback_query.message.edit_caption(
-            caption=START_MSG,
-            reply_markup=inline_buttons,
-            parse_mode=ParseMode.HTML
-        )
-    except:
-        await callback_query.message.edit_text(
-            START_MSG,
-            reply_markup=inline_buttons,
-            parse_mode=ParseMode.HTML
-        )
