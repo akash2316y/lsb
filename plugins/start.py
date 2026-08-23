@@ -33,6 +33,25 @@ user_banned_until = {}
 cancel_lock = asyncio.Lock()
 is_canceled = False
 
+async def build_start_keyboard() -> InlineKeyboardMarkup:
+    """Build the start-message keyboard: owner-added channel button rows on
+    top, followed by the fixed About/Close row."""
+    keyboard = []
+    try:
+        custom_rows = await get_start_button_rows()
+    except Exception as e:
+        print(f"Error loading custom start buttons: {e}")
+        custom_rows = []
+
+    for row in custom_rows:
+        keyboard.append([InlineKeyboardButton(btn["name"], url=btn["url"]) for btn in row])
+
+    keyboard.append([
+        InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data="about_txt"),
+        InlineKeyboardButton("ᴄʟᴏsᴇ •", callback_data="close")
+    ])
+    return InlineKeyboardMarkup(keyboard)
+
 @Bot.on_message(filters.command('start') & filters.private)
 async def start_command(client: Bot, message: Message):
     user_id = message.from_user.id
@@ -168,13 +187,8 @@ async def start_command(client: Bot, message: Message):
             )
             print(f"Decoding error: {e}")
     else:
-        inline_buttons = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data="about_txt"),
-                InlineKeyboardButton("ᴄʟᴏsᴇ •", callback_data="close")]
-            ]
-        )
-        
+        inline_buttons = await build_start_keyboard()
+
         # Show waiting emoji and instantly delete it
         wait_msg = await message.reply_text("⏳")
         await asyncio.sleep(0.1)
@@ -365,6 +379,17 @@ async def info(client: Bot, message: Message):
         parse_mode=ParseMode.HTML
     )
 
+# /cmd — lists all bot commands. Text lives in config.py (CMD_TXT). Owner/admin only.
+@Bot.on_message(filters.command('cmd') & filters.private & is_owner_or_admin)
+async def cmd_list(client: Bot, message: Message):
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("• Close •", callback_data="close")]])
+    await message.reply_text(
+        CMD_TXT,
+        reply_markup=reply_markup,
+        parse_mode=ParseMode.HTML,
+        quote=True
+    )
+
 #--------------------------------------------------------------[[ADMIN COMMANDS]]---------------------------------------------------------------------------#
 # Handler for the /cancel command
 @Bot.on_message(filters.command('cancel') & filters.private & is_owner_or_admin)
@@ -372,6 +397,97 @@ async def cancel_broadcast(client: Bot, message: Message):
     global is_canceled
     async with cancel_lock:
         is_canceled = True
+
+# /addbutton {name} {link} [{name} {link} ...] — owner only.
+# Each call adds ONE new row to the start message. Every name+link pair on
+# the same line becomes one more button in that same row.
+@Bot.on_message(filters.command('addbutton') & filters.private & filters.user(OWNER_ID))
+async def add_button_command(client: Bot, message: Message):
+    tokens = message.command[1:]
+
+    if not tokens:
+        return await message.reply_text(
+            "<b>Usage:</b>\n"
+            "<code>/addbutton Anime https://t.me/xxxx</code> — 1 button\n"
+            "<code>/addbutton Anime https://t.me/xxxx Anime https://t.me/xxxx</code> — 2 buttons, same row\n\n"
+            "<i>Every /addbutton adds a new row below the existing ones.</i>",
+            parse_mode=ParseMode.HTML,
+            quote=True
+        )
+
+    if len(tokens) % 2 != 0:
+        return await message.reply_text(
+            "<b>Every button needs a name and a link.</b>\n"
+            "Usage: <code>/addbutton Name https://t.me/xxxx</code>",
+            parse_mode=ParseMode.HTML,
+            quote=True
+        )
+
+    row = []
+    for i in range(0, len(tokens), 2):
+        name, url = tokens[i], tokens[i + 1]
+        if not url.startswith(("http://", "https://", "tg://")):
+            return await message.reply_text(
+                f"<b>Invalid link for '{name}':</b> <code>{url}</code>\n"
+                f"Links must start with <code>http://</code>, <code>https://</code> or <code>tg://</code>",
+                parse_mode=ParseMode.HTML,
+                quote=True
+            )
+        row.append({"name": name, "url": url})
+
+    row_count = await add_start_button_row(row)
+    if row_count == -1:
+        return await message.reply_text("<b>❌ Failed to save the button(s). Try again.</b>", parse_mode=ParseMode.HTML, quote=True)
+
+    preview = " | ".join(btn["name"] for btn in row)
+    await message.reply_text(
+        f"<b>✅ Row #{row_count} added:</b> {preview}\n\n"
+        f"<code>/removebutton {row_count}</code> — remove just this row\n"
+        f"<code>/removebutton</code> — view/clear all rows",
+        parse_mode=ParseMode.HTML,
+        quote=True
+    )
+
+# /removebutton [row_number|all] — owner only.
+# No args: shows current rows. "all": clears everything. A number: removes that row.
+@Bot.on_message(filters.command('removebutton') & filters.private & filters.user(OWNER_ID))
+async def remove_button_command(client: Bot, message: Message):
+    args = message.command[1:]
+    rows = await get_start_button_rows()
+
+    if not rows:
+        return await message.reply_text("<b>No custom buttons are set.</b>", parse_mode=ParseMode.HTML, quote=True)
+
+    if not args:
+        listing = "\n".join(
+            f"{idx}. " + " | ".join(btn["name"] for btn in row)
+            for idx, row in enumerate(rows, start=1)
+        )
+        return await message.reply_text(
+            f"<b>Current button rows:</b>\n{listing}\n\n"
+            f"<code>/removebutton {{row_number}}</code> — remove one row\n"
+            f"<code>/removebutton all</code> — remove everything",
+            parse_mode=ParseMode.HTML,
+            quote=True
+        )
+
+    if args[0].lower() == "all":
+        await remove_start_button_row(None)
+        return await message.reply_text("<b>✅ All custom buttons removed.</b>", parse_mode=ParseMode.HTML, quote=True)
+
+    if not args[0].isdigit():
+        return await message.reply_text(
+            "<b>Usage:</b> <code>/removebutton {row_number}</code> or <code>/removebutton all</code>",
+            parse_mode=ParseMode.HTML,
+            quote=True
+        )
+
+    index = int(args[0])
+    success = await remove_start_button_row(index)
+    if success:
+        await message.reply_text(f"<b>✅ Row #{index} removed.</b>", parse_mode=ParseMode.HTML, quote=True)
+    else:
+        await message.reply_text(f"<b>❌ Row #{index} doesn't exist.</b>", parse_mode=ParseMode.HTML, quote=True)
 
 @Bot.on_message(filters.private & filters.command('broadcast') & is_owner_or_admin)
 async def broadcast(client: Bot, message: Message):
@@ -539,10 +655,7 @@ async def about_callback(client: Bot, callback_query: CallbackQuery):
 @Bot.on_callback_query(filters.regex("back_start"))
 async def back_to_start(client: Bot, callback_query: CallbackQuery):
     await callback_query.answer()
-    
-    inline_buttons = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data="about_txt"),
-             InlineKeyboardButton("ᴄʟᴏsᴇ •", callback_data="close")]
-        ]
-    )
+
+    inline_buttons = await build_start_keyboard()
+
+    await callback_query.message.edit_reply_markup(reply_markup=inline_buttons)
