@@ -49,6 +49,50 @@ ABOUT_TXT = """<b><blockquote>›› ᴘʀᴏᴍᴏ : <a href='http://t.me/htkuk
 
 CHANNELS_TXT = """<b>›› ᴀɴɪᴍᴇ ᴄʜᴀɴɴᴇʟ</b> """
 
+CMD_TXT = """<b>›› ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs</b>
+
+<b><u>Gᴇɴᴇʀᴀʟ</u></b>
+<blockquote>/start — Sᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ</blockquote>
+
+<b><u>Sᴛᴀᴛs & Bʀᴏᴀᴅᴄᴀsᴛ</u></b>
+<blockquote>/status — Bᴏᴛ ᴜᴘᴛɪᴍᴇ, ᴘɪɴɢ & ᴜsᴇʀ ᴄᴏᴜɴᴛ
+/stats — Bᴏᴛ sᴛᴀᴛs (ᴏᴡɴᴇʀ ᴏɴʟʏ)
+/broadcast — Bʀᴏᴀᴅᴄᴀsᴛ ᴀ ʀᴇᴘʟɪᴇᴅ ᴍᴇssᴀɢᴇ ᴛᴏ ᴀʟʟ ᴜsᴇʀs
+/cancel — Cᴀɴᴄᴇʟ ᴀ ʀᴜɴɴɪɴɢ ʙʀᴏᴀᴅᴄᴀsᴛ</blockquote>
+
+<b><u>Cʜᴀɴɴᴇʟ / Lɪɴᴋ Mᴀɴᴀɢᴇᴍᴇɴᴛ</u></b>
+<blockquote>/addchat, /addch — Aᴅᴅ ᴀ ᴄʜᴀɴɴᴇʟ
+/delchat, /delch — Rᴇᴍᴏᴠᴇ ᴀ ᴄʜᴀɴɴᴇʟ
+/channels — Lɪsᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴄʜᴀɴɴᴇʟs
+/ch_links — Lɪsᴛ ᴄʜᴀɴɴᴇʟs ᴡɪᴛʜ ᴛʜᴇɪʀ ʟɪɴᴋs
+/genlink — Gᴇɴᴇʀᴀᴛᴇ ᴀ sʜᴀʀᴇᴀʙʟᴇ ʟɪɴᴋ
+/bulklink — Gᴇɴᴇʀᴀᴛᴇ ʟɪɴᴋs ɪɴ ʙᴜʟᴋ
+/links — Lɪsᴛ ɢᴇɴᴇʀᴀᴛᴇᴅ ʟɪɴᴋs
+/reqlink — Gᴇɴᴇʀᴀᴛᴇ ᴀ ᴊᴏɪɴ-ʀᴇǫᴜᴇsᴛ ʟɪɴᴋ</blockquote>
+
+<b><u>Fᴏʀᴄᴇ Sᴜʙsᴄʀɪʙᴇ</u></b>
+<blockquote>/addfsub — Aᴅᴅ ᴀ ꜰᴏʀᴄᴇ-sᴜʙ ᴄʜᴀɴɴᴇʟ
+/delfsub — Rᴇᴍᴏᴠᴇ ᴀ ꜰᴏʀᴄᴇ-sᴜʙ ᴄʜᴀɴɴᴇʟ
+/fsubs — Lɪsᴛ ꜰᴏʀᴄᴇ-sᴜʙ ᴄʜᴀɴɴᴇʟs
+/req — Tᴏɢɢʟᴇ ʀᴇǫᴜᴇsᴛ ᴍᴏᴅᴇ</blockquote>
+
+<b><u>Aᴜᴛᴏ Aᴘᴘʀᴏᴠᴇ</u></b>
+<blockquote>/approveon — Tᴜʀɴ ᴏɴ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ꜰᴏʀ ᴀ ᴄʜᴀɴɴᴇʟ
+/approveoff — Tᴜʀɴ ᴏꜰꜰ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ꜰᴏʀ ᴀ ᴄʜᴀɴɴᴇʟ
+/reqtime — Sᴇᴛ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ᴅᴇʟᴀʏ (sᴇᴄᴏɴᴅs)
+/reqmode — Tᴏɢɢʟᴇ ʀᴇǫᴜᴇsᴛ ᴍᴏᴅᴇ ᴏɴ/ᴏꜰꜰ</blockquote>
+
+<b><u>Aᴅᴍɪɴs</u></b>
+<blockquote>/addadmin — Aᴅᴅ ᴀɴ ᴀᴅᴍɪɴ (ᴏᴡɴᴇʀ ᴏɴʟʏ)
+/deladmin — Rᴇᴍᴏᴠᴇ ᴀɴ ᴀᴅᴍɪɴ (ᴏᴡɴᴇʀ ᴏɴʟʏ)
+/admins — Lɪsᴛ ᴀʟʟ ᴀᴅᴍɪɴs (ᴏᴡɴᴇʀ ᴏɴʟʏ)</blockquote>
+
+<b><u>Sᴛᴀʀᴛ Mᴇssᴀɢᴇ Bᴜᴛᴛᴏɴs (ᴏᴡɴᴇʀ ᴏɴʟʏ)</u></b>
+<blockquote>/addbutton {name} {link} ... — Aᴅᴅ ᴀ ʙᴜᴛᴛᴏɴ ʀᴏᴡ ᴛᴏ ᴛʜᴇ sᴛᴀʀᴛ ᴍᴇssᴀɢᴇ
+/removebutton — Sʜᴏᴡ/ʀᴇᴍᴏᴠᴇ ʙᴜᴛᴛᴏɴ ʀᴏᴡs</blockquote>
+
+<b>/cmd — Sʜᴏᴡ ᴛʜɪs ʟɪsᴛ</b>"""
+
 #--- ---- ---- --- --- --- - -- -  - - - - - - - - - - - --  - -
 # Default
 BOT_STATS_TEXT = "<b>BOT UPTIME</b>\n{uptime}"
