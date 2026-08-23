@@ -31,8 +31,7 @@ APPROVED = environ.get("APPROVED_WELCOME", "off").lower()
 TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "40"))
 #--- ---- ---- --- --- --- - -- -  - - - - - - - - - - - --  - -
 # Messages
-START_MSG = os.environ.get("START_MESSAGE", "
-<b><blockquote>ʜᴇʟʟᴏ  {mention} ×</blockquote>\n <blockquote>ɪ'ᴍ ᴊᴜsᴛ ʟɪᴋᴇ ʏᴏᴜʀ ꜰʀɪᴇɴᴅʟʏ ɴᴇɪɢʜʙᴏʀʜᴏᴏᴅ ʟɪɴᴋ-sʜᴀʀɪɴɢ ʙᴏᴛ ! ᴍʏ ᴍᴀɪɴ ᴊᴏʙ ɪs sʜᴀʀɪɴɢ ᴄʜᴀɴɴᴇʟ ʟɪɴᴋs ᴛᴏ ᴋᴇᴇᴘ ᴀʟʟ ᴛʜᴇ ᴀᴅᴍɪɴ ᴄʜᴀɴɴᴇʟs sᴀꜰᴇ ᴀɴᴅ sᴏᴜɴᴅ ꜰʀᴏᴍ ᴄᴏᴘʏʀɪɢʜᴛ sᴛʀɪᴋᴇs.</blockquote> \n<blockquote>— ʙᴜɪʟᴛ ꜰᴏʀ <a href='https://t.me/flowless_network'>ꜰʟᴏᴡʟᴇss ɴᴇᴛᴡᴏʀᴋ</a></b></blockquote>")
+START_MSG = os.environ.get("START_MESSAGE", "<b><blockquote>ʜᴇʟʟᴏ  {mention} ×</blockquote>\n <blockquote>ɪ'ᴍ ᴊᴜsᴛ ʟɪᴋᴇ ʏᴏᴜʀ ꜰʀɪᴇɴᴅʟʏ ɴᴇɪɢʜʙᴏʀʜᴏᴏᴅ ʟɪɴᴋ-sʜᴀʀɪɴɢ ʙᴏᴛ ! ᴍʏ ᴍᴀɪɴ ᴊᴏʙ ɪs sʜᴀʀɪɴɢ ᴄʜᴀɴɴᴇʟ ʟɪɴᴋs ᴛᴏ ᴋᴇᴇᴘ ᴀʟʟ ᴛʜᴇ ᴀᴅᴍɪɴ ᴄʜᴀɴɴᴇʟs sᴀꜰᴇ ᴀɴᴅ sᴏᴜɴᴅ ꜰʀᴏᴍ ᴄᴏᴘʏʀɪɢʜᴛ sᴛʀɪᴋᴇs.</blockquote> \n<blockquote>— ʙᴜɪʟᴛ ꜰᴏʀ <a href='https://t.me/flowless_network'>ꜰʟᴏᴡʟᴇss ɴᴇᴛᴡᴏʀᴋ</a></b></blockquote>")
 START_PIC = os.environ.get("START_PIC", "https://graph.org/file/2a3bdf158d2d876c474a1-8566a8ace3bc440d18.jpg")
 
 #FORCE_PIC
