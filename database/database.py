@@ -12,6 +12,7 @@ database = dbclient[DB_NAME]
 user_data = database['users']
 channels_collection = database['channels']
 fsub_channels_collection = database['fsub_channels']
+start_buttons_collection = database['start_buttons']
 
 async def add_user(user_id: int) -> bool:
     """Add a user to the database if they don't exist."""
@@ -332,4 +333,61 @@ async def is_approval_off(channel_id: int) -> bool:
         return bool(channel and channel.get("approval_off", False))
     except Exception as e:
         print(f"Error checking approval_off for channel {channel_id}: {e}")
+        return False
+
+# --- Custom start-message buttons (owner controlled via /addbutton, /removebutton) ---
+
+async def add_start_button_row(buttons: List[dict]) -> int:
+    """Append a new row of {name, url} buttons for the start message.
+
+    Returns the new total number of rows, or -1 on failure.
+    """
+    try:
+        doc = await start_buttons_collection.find_one({"_id": "rows"})
+        rows = doc["rows"] if doc and "rows" in doc else []
+        rows.append(buttons)
+        await start_buttons_collection.update_one(
+            {"_id": "rows"},
+            {"$set": {"rows": rows}},
+            upsert=True
+        )
+        return len(rows)
+    except Exception as e:
+        print(f"Error adding start button row: {e}")
+        return -1
+
+async def get_start_button_rows() -> List[List[dict]]:
+    """Get all custom start-message button rows, in the order they were added."""
+    try:
+        doc = await start_buttons_collection.find_one({"_id": "rows"})
+        return doc["rows"] if doc and "rows" in doc else []
+    except Exception as e:
+        print(f"Error fetching start button rows: {e}")
+        return []
+
+async def remove_start_button_row(index: Optional[int] = None) -> bool:
+    """Remove one row (1-based index) or clear all rows if index is None."""
+    try:
+        if index is None:
+            await start_buttons_collection.update_one(
+                {"_id": "rows"},
+                {"$set": {"rows": []}},
+                upsert=True
+            )
+            return True
+
+        doc = await start_buttons_collection.find_one({"_id": "rows"})
+        rows = doc["rows"] if doc and "rows" in doc else []
+        if index < 1 or index > len(rows):
+            return False
+
+        rows.pop(index - 1)
+        await start_buttons_collection.update_one(
+            {"_id": "rows"},
+            {"$set": {"rows": rows}},
+            upsert=True
+        )
+        return True
+    except Exception as e:
+        print(f"Error removing start button row: {e}")
         return False
