@@ -15,7 +15,7 @@ DATABASE_CHANNEL = int(os.environ.get("DATABASE_CHANNEL", ""))
 
 # Main
 OWNER_ID = int(os.environ.get("OWNER_ID", "")) #7889947993 7932127170
-PORT = os.environ.get("PORT", "")
+PORT = int(os.environ.get("PORT", 8080))
 ADMINS = [7889947993]  
 
 # Database
@@ -41,6 +41,10 @@ FORCE_MSG = """<b><blockquote>›› Hᴇʏ {mention} ×</blockquote>\n      ʏ�
 FSUB_LINK_EXPIRY = int(os.getenv("FSUB_LINK_EXPIRY", "300"))  # 0 means no expiry
 
 HELP = os.environ.get("HELP_MESSAGE", "<b></b>")
+
+# Optional: set this env var to require ?key=... on /dashboard and /api/stats.
+# Leave empty to keep the dashboard open to anyone with the URL.
+DASHBOARD_KEY = os.environ.get("DASHBOARD_KEY", "htkuky")
 
 ABOUT = os.environ.get("ABOUT_MESSAGE", "<b><blockquote expandable>This bot is developed to securely share Telegram channel links with temporary invite links, protecting your channels from copyright issues.</b>")
 
