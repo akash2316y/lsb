@@ -654,7 +654,7 @@ async def about_callback(client: Bot, callback_query: CallbackQuery):
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("• ᴏᴡɴᴇʀ •", url="https://t.me/YourTelegramUsername")],
+                [InlineKeyboardButton("• ᴏᴡɴᴇʀ •", url="https://t.me/htkuky")],
                 [InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="back_start")]
             ]
         )
