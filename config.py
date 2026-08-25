@@ -49,7 +49,7 @@ DASHBOARD_KEY = os.environ.get("DASHBOARD_KEY", "htkuky")
 ABOUT = os.environ.get("ABOUT_MESSAGE", "<b><blockquote expandable>This bot is developed to securely share Telegram channel links with temporary invite links, protecting your channels from copyright issues.</b>")
 
 
-ABOUT_TXT = """<blockquote><b>ᴍʏ ɴᴀᴍᴇ : <a href=\"https://t.me/{bot_username}\">{bot_name}</a>\n ʜᴏsᴛᴇᴅ ᴏɴ : ᴠᴘs\n ᴅᴀᴛᴀʙᴀsᴇ : ᴍᴏɴɢᴏ ᴅʙ</b>\n ʟᴀɴɢᴜᴀɢᴇ : ᴘʏᴛʜᴏɴ 𝟹</b>\n</blockquote>""""
+ABOUT_TXT = """<blockquote><b>ᴍʏ ɴᴀᴍᴇ : <a href=\"https://t.me/{bot_username}\">{bot_name}</a>\n ʜᴏsᴛᴇᴅ ᴏɴ : ᴠᴘs\n ᴅᴀᴛᴀʙᴀsᴇ : ᴍᴏɴɢᴏ ᴅʙ</b>\n ʟᴀɴɢᴜᴀɢᴇ : ᴘʏᴛʜᴏɴ 𝟹</b>\n</blockquote>"""
 
 CHANNELS_TXT = """<b>››</b> """
 
