@@ -498,11 +498,11 @@ async def broadcast(client: Bot, message: Message):
     if not message.reply_to_message:
         msg = await message.reply(
             "Reply to a message to broadcast.\n\nUsage examples:\n"
-            "`/broadcast normal`\n"
-            "`/broadcast pin`\n"
-            "`/broadcast delete 30`\n"
-            "`/broadcast pin delete 30`\n"
-            "`/broadcast silent`\n"
+            "<code>/broadcast normal</code>\n"
+            "<code>/broadcast pin</code>\n"
+            "<code>/broadcast delete 30</code>\n"
+            "<code>/broadcast pin delete 30</code>\n"
+            "<code>/broadcast silent</code>\n"
         )
         await asyncio.sleep(8)
         return await msg.delete()
