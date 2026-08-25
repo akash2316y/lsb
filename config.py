@@ -51,7 +51,7 @@ ABOUT = os.environ.get("ABOUT_MESSAGE", "<b><blockquote expandable>This bot is d
 
 ABOUT_TXT = """<b><blockquote>›› ᴘʀᴏᴍᴏ : <a href='http://t.me/htkuky'>ᴏᴡɴᴇʀ</a></b></blockquote>"""
 
-CHANNELS_TXT = """<b>›› ᴀɴɪᴍᴇ ᴄʜᴀɴɴᴇʟ</b> """
+CHANNELS_TXT = """<b>››</b> """
 
 CMD_TXT = """<b>›› ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs</b>
 
