@@ -490,7 +490,7 @@ async def remove_button_command(client: Bot, message: Message):
     else:
         await message.reply_text(f"<b>❌ Row #{index} doesn't exist.</b>", parse_mode=ParseMode.HTML, quote=True)
 
-@Bot.on_message(filters.private & filters.command('broadcast') & is_owner_or_admin)
+@Bot.on_message(filters.command('broadcast') & filters.private & filters.user(OWNER_ID))
 async def broadcast(client: Bot, message: Message):
     global is_canceled
     args = message.text.split()[1:]
