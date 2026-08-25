@@ -640,21 +640,26 @@ MAX_MESSAGES = 3
 TIME_WINDOW = timedelta(seconds=10)
 BAN_DURATION = timedelta(hours=1)
 
+    
 @Bot.on_callback_query(filters.regex("about_txt"))
 async def about_callback(client: Bot, callback_query: CallbackQuery):
     await callback_query.answer()
     
     await callback_query.message.edit_text(
-        ABOUT_TXT,
+        text=ABOUT_TXT.format(
+            bot_username=client.me.username,
+            bot_name=client.me.first_name
+        ),
         parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("• ᴏᴡɴᴇʀ •", url="https://t.me/htkuky")],
+                [InlineKeyboardButton("• ᴏᴡɴᴇʀ •", url="https://t.me/YourTelegramUsername")],
                 [InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="back_start")]
             ]
         )
     )
-    
+
 
 @Bot.on_callback_query(filters.regex("channels_txt"))
 async def channels_callback(client: Bot, callback_query: CallbackQuery):
