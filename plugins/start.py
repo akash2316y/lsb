@@ -648,10 +648,13 @@ async def about_callback(client: Bot, callback_query: CallbackQuery):
         ABOUT_TXT,
         parse_mode=ParseMode.HTML,
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="back_start")]]
+            [
+                [InlineKeyboardButton("• ᴏᴡɴᴇʀ •", url="https://t.me/htkuky")],
+                [InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="back_start")]
+            ]
         )
     )
-
+    
 
 @Bot.on_callback_query(filters.regex("channels_txt"))
 async def channels_callback(client: Bot, callback_query: CallbackQuery):
