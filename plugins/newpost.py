@@ -1,6 +1,6 @@
-# +++ Modified By Yato [telegram username: @ProYato] +++
 import asyncio
 import base64
+import html
 from bot import Bot
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
@@ -30,59 +30,91 @@ async def revoke_invite_after_5_minutes(client: Bot, channel_id: int, link: str,
     except Exception as e:
         print(f"Fᴀɪʟᴇᴅ ᴛᴏ ʀᴇᴠᴏᴋᴇ ɪɴᴠɪᴛᴇ ғᴏʀ ᴄʜᴀɴɴᴇʟ {channel_id}: {e}")
 
-# Add chat command
-@Bot.on_message((filters.command('addchat') | filters.command('addch')) & is_owner_or_admin)
-async def set_channel(client: Bot, message: Message):
-    try:
-        channel_id = int(message.command[1])
-    except (IndexError, ValueError):
-        return await message.reply("<b><blockquote expandable>Iɴᴠᴀʟɪᴅ ᴄʜᴀᴛ ID. Exᴀᴍᴘʟᴇ: <code>/addchat &lt;chat_id&gt;</code></b>")
-    
+# Helper: add a single chat, used by /addchat for each ID given.
+# Returns (success: bool, line: str) where `line` is a one-entry summary
+# ready to drop into the combined result message.
+async def _add_single_chat(client: Bot, channel_id: int) -> tuple[bool, str]:
     try:
         chat = await client.get_chat(channel_id)
 
         # Check permissions based on chat type
         if chat.permissions:
-            # For groups/channels, check appropriate permissions
             has_permission = False
             if hasattr(chat.permissions, 'can_post_messages') and chat.permissions.can_post_messages:
                 has_permission = True
             elif hasattr(chat.permissions, 'can_edit_messages') and chat.permissions.can_edit_messages:
                 has_permission = True
             elif chat.type.name in ['GROUP', 'SUPERGROUP']:
-                # For groups, having the bot as admin is usually sufficient
                 try:
                     bot_member = await client.get_chat_member(chat.id, (await client.get_me()).id)
                     if bot_member.status.name in ['ADMINISTRATOR', 'CREATOR']:
                         has_permission = True
                 except:
                     pass
-            
+
             if not has_permission:
-                return await message.reply(f"<b><blockquote expandable>I ᴀᴍ ɪɴ {chat.title}, ʙᴜᴛ I ʟᴀᴄᴋ ᴘᴏsᴛɪɴɢ ᴏʀ ᴇᴅɪᴛɪɴɢ ᴘᴇʀᴍɪssɪᴏɴs.</b>")
-        
+                return False, f"<code>{channel_id}</code> — I'm in {html.escape(chat.title)}, but I lack posting/editing permissions."
+
         await save_channel(channel_id)
         base64_invite = await save_encoded_link(channel_id)
         normal_link = f"https://t.me/{client.username}?start={base64_invite}"
         base64_request = await encode(str(channel_id))
         await save_encoded_link2(channel_id, base64_request)
         request_link = f"https://t.me/{client.username}?start=req_{base64_request}"
-        reply_text = (
-            f"<b><blockquote expandable>✅ Cʜᴀᴛ {chat.title} ({channel_id}) ʜᴀs ʙᴇᴇɴ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ.</b>\n\n"
-            f"<b>🔗 Nᴏʀᴍᴀʟ Lɪɴᴋ:</b> <code>{normal_link}</code>\n"
-            f"<b>🔗 Rᴇǫᴜᴇsᴛ Lɪɴᴋ:</b> <code>{request_link}</code>"
+
+        return True, (
+            f"<b>✅ {html.escape(chat.title)}</b> (<code>{channel_id}</code>)\n"
+            f"    🔗 Normal: <code>{normal_link}</code>\n"
+            f"    🔗 Request: <code>{request_link}</code>"
         )
-        return await message.reply(reply_text)
-    
+
     except UserNotParticipant:
-        return await message.reply("<b><blockquote expandable>I ᴀᴍ ɴᴏᴛ ᴀ ᴍᴇᴍʙᴇʀ ᴏғ ᴛʜɪs ᴄʜᴀɴɴᴇʟ. Pʟᴇᴀsᴇ ᴀᴅᴅ ᴍᴇ ᴀɴᴅ ᴛʀʏ ᴀɢᴀɪɴ.</b>")
+        return False, f"<code>{channel_id}</code> — I'm not a member of this chat."
     except FloodWait as e:
         await asyncio.sleep(e.x)
-        return await set_channel(client, message)
+        return await _add_single_chat(client, channel_id)  # retry once, post-wait
     except RPCError as e:
-        return await message.reply(f"RPC Error: {str(e)}")
+        return False, f"<code>{channel_id}</code> — RPC Error: {e}"
     except Exception as e:
-        return await message.reply(f"Unexpected Error: {str(e)}")
+        return False, f"<code>{channel_id}</code> — {e}"
+
+
+# Add chat command — accepts one or many chat IDs in a single call:
+# /addchat -100xxxxxxxxxx -100yyyyyyyyyy -100zzzzzzzzzz
+@Bot.on_message((filters.command('addchat') | filters.command('addch')) & is_owner_or_admin)
+async def set_channel(client: Bot, message: Message):
+    if len(message.command) < 2:
+        return await message.reply(
+            "<b><blockquote expandable>Iɴᴠᴀʟɪᴅ ᴄʜᴀᴛ ID. Exᴀᴍᴘʟᴇ: <code>/addchat &lt;chat_id&gt; [chat_id2] [chat_id3] ...</code></b>"
+        )
+
+    # De-duplicate while preserving order (in case the same ID is passed twice)
+    raw_ids = list(dict.fromkeys(message.command[1:]))
+
+    temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
+
+    added, failed = [], []
+    for raw_id in raw_ids:
+        try:
+            channel_id = int(raw_id)
+        except ValueError:
+            failed.append(f"<code>{raw_id}</code> — Invalid chat ID")
+            continue
+
+        ok, line = await _add_single_chat(client, channel_id)
+        (added if ok else failed).append(line)
+
+    parts = [f"<b>📥 /addchat Result</b>  (<code>{len(added)}/{len(raw_ids)}</code> added)"]
+
+    if added:
+        parts.append(f"\n<b>✅ Added:</b>")
+        parts.append("<blockquote expandable>" + "\n\n".join(added) + "</blockquote>")
+
+    if failed:
+        parts.append(f"\n<b>❌ Failed:</b>")
+        parts.append("\n".join(f"• {line}" for line in failed))
+
+    await temp.edit("\n".join(parts), disable_web_page_preview=True)
 
 # Delete chat command
 @Bot.on_message((filters.command('delchat') | filters.command('delch')) & is_owner_or_admin)
