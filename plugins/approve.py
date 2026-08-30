@@ -46,14 +46,12 @@ async def autoapprove(client, message: ChatJoinRequest):
         if member.status in ["member", "administrator", "creator"]:  
             print(f"User {user.id} is already a participant of {chat.id}, skipping approval.")  
             return  
-    except UserNotParticipant:  
-        # User is not a member, handle accordingly  
-        pass  
-  
+    except UserNotParticipant:
+        # User is not a member, handle accordingly
+        pass
     # Move this inside the async function
-await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
-    
-    # ✅ TRACK APPROVED REQUEST
+    await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
+    # ✅  TRACK APPROVED REQUEST
     await save_approved_request(
         channel_id=chat.id,
         user_id=user.id,
