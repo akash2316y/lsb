@@ -147,3 +147,95 @@ async def approve_on_command(client, message: Message):
         await message.reply_text(f"✅ Auto-approval is now <b>ON</b> for channel <code>{channel_id}</code>.")
     else:
         await message.reply_text(f"❌ Failed to set auto-approval ON for channel <code>{channel_id}</code>.")
+
+@Client.on_message(filters.command("total") & is_owner_or_admin)
+async def show_channel_stats(client: Client, message: Message):
+    """Show total channels and subscriptions with names"""
+    temp = await message.reply("<b><i>📊 ᴡᴀɪᴛ ᴀ sᴇᴄ.. ʟᴏᴀᴅɪɴɢ ᴅᴀᴛᴀ...</i></b>", quote=True)
+    
+    try:
+        fsub_channels = await get_fsub_channels()
+        
+        if not fsub_channels:
+            return await temp.edit("<b>❌ No force-sub channels found.</b>")
+        
+        stats = await get_channel_stats()
+        
+        result = f"<b>📊 CHANNEL STATISTICS</b>\n\n"
+        result += f"<b>Total Channels:</b> <code>{len(fsub_channels)}</code>\n"
+        result += f"<b>Total Subscriptions:</b> <code>{sum(stats.values())}</code>\n\n"
+        result += "<b>━━━━━━━━━━━━━━━━━━━━━━</b>\n\n"
+        result += "<b>📋 Channel Details:</b>\n\n"
+        
+        total_subs = 0
+        for idx, channel_id in enumerate(fsub_channels, 1):
+            try:
+                chat = await client.get_chat(channel_id)
+                channel_name = chat.title
+                channel_link = chat.invite_link or f"https://t.me/c/{str(channel_id)[4:]}"
+                
+                sub_count = stats.get(channel_id, 0)
+                total_subs += sub_count
+                
+                result += f"<b>{idx}.</b> <a href='{channel_link}'>{channel_name}</a>\n"
+                result += f"    <code>Channel ID:</code> <code>{channel_id}</code>\n"
+                result += f"    <code>Subscriptions:</code> <code>{sub_count}</code>\n\n"
+                
+            except Exception as e:
+                result += f"<b>{idx}.</b> <code>{channel_id}</code> — <i>⚠️ Error loading</i>\n\n"
+        
+        result += "<b>━━━━━━━━━━━━━━━━━━━━━━</b>\n"
+        result += f"<b>✅ Total:</b> <code>{len(fsub_channels)} Channels | {total_subs} Subscriptions</code>"
+        
+        await temp.edit(
+            result,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]])
+        )
+        
+    except Exception as e:
+        await temp.edit(f"<b>❌ Error loading statistics:</b>\n<code>{e}</code>")
+        print(f"Error in /total command: {e}")
+
+@Client.on_message(filters.command("reqstats") & is_owner_or_admin)
+async def show_request_stats(client: Client, message: Message):
+    """Show detailed approval stats for each channel"""
+    temp = await message.reply("<b><i>📊 ᴡᴀɪᴛ ᴀ sᴇᴄ.. ʟᴏᴀᴅɪɴɢ ᴀᴘᴘʀᴏᴠᴀʟ ᴅᴀᴛᴀ...</i></b>", quote=True)
+    
+    try:
+        fsub_channels = await get_fsub_channels()
+        
+        if not fsub_channels:
+            return await temp.edit("<b>❌ No force-sub channels found.</b>")
+        
+        stats = await get_channel_stats()
+        
+        result = f"<b>📈 REQUEST APPROVAL STATISTICS</b>\n\n"
+        result += f"<b>Total Channels:</b> <code>{len(fsub_channels)}</code>\n"
+        result += f"<b>Total Approvals:</b> <code>{sum(stats.values())}</code>\n\n"
+        result += "<b>━━━━━━━━━━━━━━━━━━━━━━</b>\n\n"
+        
+        sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
+        
+        for idx, (channel_id, count) in enumerate(sorted_stats, 1):
+            try:
+                chat = await client.get_chat(channel_id)
+                percentage = (count / sum(stats.values()) * 100) if sum(stats.values()) > 0 else 0
+                
+                result += f"<b>{idx}. {chat.title}</b>\n"
+                result += f"   Approvals: <code>{count}</code> ({percentage:.1f}%)\n"
+                result += f"   ID: <code>{channel_id}</code>\n\n"
+                
+            except Exception as e:
+                result += f"<b>{idx}. Channel {channel_id}</b> — ⚠️ Error\n\n"
+        
+        await temp.edit(
+            result,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]])
+        )
+        
+    except Exception as e:
+        await temp.edit(f"<b>❌ Error:</b> <code>{e}</code>")
+        print(f"Error in /reqstats: {e}")
+
