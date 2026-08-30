@@ -1,4 +1,3 @@
-# +++ Modified By Yato [telegram username: @i_killed_my_clan & @ProYato] +++ # aNDI BANDI SANDI JISNE BHI CREDIT HATAYA USKI BANDI RAndi 
 import motor.motor_asyncio
 import base64
 from config import DB_URI, DB_NAME
@@ -391,3 +390,59 @@ async def remove_start_button_row(index: Optional[int] = None) -> bool:
     except Exception as e:
         print(f"Error removing start button row: {e}")
         return False
+
+# DATABASE FUNCTIONS FOR STATISTICS
+async def save_approved_request(channel_id: int, user_id: int, username: str = None) -> bool:
+    """Save approved request with user info and channel info."""
+    if not isinstance(channel_id, int) or not isinstance(user_id, int):
+        print(f"Invalid input: channel_id={channel_id}, user_id={user_id}")
+        return False
+    
+    try:
+        approved_requests_collection = database['approved_requests']
+        await approved_requests_collection.insert_one({
+            'channel_id': channel_id,
+            'user_id': user_id,
+            'username': username,
+            'approved_at': datetime.utcnow(),
+            'status': 'approved'
+        })
+        return True
+    except Exception as e:
+        print(f"Error saving approved request: {e}")
+        return False
+
+async def get_approved_requests_by_channel(channel_id: int) -> List[dict]:
+    """Get all approved requests for a specific channel."""
+    if not isinstance(channel_id, int):
+        return []
+    
+    try:
+        approved_requests_collection = database['approved_requests']
+        requests = await approved_requests_collection.find({'channel_id': channel_id, 'status': 'approved'}).to_list(None)
+        return requests
+    except Exception as e:
+        print(f"Error fetching approved requests: {e}")
+        return []
+
+async def get_channel_stats() -> dict:
+    """Get statistics for all channels (count of subscriptions)."""
+    try:
+        approved_requests_collection = database['approved_requests']
+        fsub_channels_collection = database['fsub_channels']
+        
+        channels = await fsub_channels_collection.find({'status': 'active'}).to_list(None)
+        
+        stats = {}
+        for channel in channels:
+            channel_id = channel['channel_id']
+            count = await approved_requests_collection.count_documents({
+                'channel_id': channel_id,
+                'status': 'approved'
+            })
+            stats[channel_id] = count
+        
+        return stats
+    except Exception as e:
+        print(f"Error getting channel stats: {e}")
+        return {}
