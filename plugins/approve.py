@@ -7,7 +7,6 @@ from pyrogram.types import Message, User, ChatJoinRequest, InlineKeyboardMarkup,
 from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParticipant
 from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels
-from helper_func import is_owner_or_admin, UserClient
 from config import LOG_CHANNEL
 
 # Default settings
