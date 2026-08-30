@@ -54,6 +54,7 @@ async def build_start_keyboard() -> InlineKeyboardMarkup:
     ])
     return InlineKeyboardMarkup(keyboard)
 
+
 @Bot.on_message(filters.command('start') & filters.private)
 async def start_command(client: Bot, message: Message):
     user_id = message.from_user.id
@@ -67,16 +68,23 @@ async def start_command(client: Bot, message: Message):
             
     await add_user(user_id)
 
-    # ✅ Check Force Subscription
-    fsub_channels = await db.show_channels()
-    if fsub_channels:
-        is_subscribed, subscription_message, subscription_buttons = await check_subscription_status(client, user_id, fsub_channels)
-        if not is_subscribed:
-            return await message.reply_text(
-                subscription_message,
-                reply_markup=subscription_buttons,
-                parse_mode=ParseMode.HTML
-            )
+   # ✅ Check Force Subscription
+    if not await is_subscribed(client, user_id):
+        #await temp.delete()
+        return await not_joined(client, message)
+
+
+# 
+    # Check FSub requirements
+   #  fsub_channels = await get_fsub_channels()
+   #  if fsub_channels:
+    #     is_subscribed, subscription_message, subscription_buttons = await check_subscription_status(client, user_id, fsub_channels)
+   #      if not is_subscribed:
+    #         return await message.reply_text(
+    #             subscription_message,
+    #             reply_markup=subscription_buttons,
+    #             parse_mode=ParseMode.HTML
+     #        )
 
     #close
 
