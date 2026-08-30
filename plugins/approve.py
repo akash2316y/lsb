@@ -1,18 +1,20 @@
 import os
 import asyncio
+from datetime import datetime
 from config import *
 from pyrogram import Client, filters
 from pyrogram.types import Message, User, ChatJoinRequest, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParticipant
-from database.database import set_approval_off, is_approval_off
-from helper_func import *
-from config import LOG_CHANNEL
 from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels
-
+from helper_func import is_owner_or_admin, UserClient
+from config import LOG_CHANNEL
 
 # Default settings
 APPROVAL_WAIT_TIME = 1  # seconds 
-AUTO_APPROVE_ENABLED = False  # Toggle for enabling/disabling auto approval 
+AUTO_APPROVE_ENABLED = False  # Toggle for enabling/disabling auto approval
+user_client = None
+APPROVED = "on"  # Default setting for approval messages
 
 async def get_user_client():
     global user_client
@@ -49,9 +51,10 @@ async def autoapprove(client, message: ChatJoinRequest):
     except UserNotParticipant:
         # User is not a member, handle accordingly
         pass
+    
     # Move this inside the async function
     await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
-    # ✅  TRACK APPROVED REQUEST
+    # ✅ TRACK APPROVED REQUEST
     await save_approved_request(
         channel_id=chat.id,
         user_id=user.id,
@@ -60,7 +63,7 @@ async def autoapprove(client, message: ChatJoinRequest):
     print(f"✅ Tracked approval - User {user.id} approved in channel {chat.id}")
 
     if LOG_CHANNEL:
-        try:                      # Indented ✅
+        try:
             user_name = user.first_name or "User"
             if user.last_name:
                 user_name = f"{user_name} {user.last_name}"
@@ -78,7 +81,7 @@ async def autoapprove(client, message: ChatJoinRequest):
             
             await client.send_message(LOG_CHANNEL, log_text, parse_mode=ParseMode.HTML)
             print(f"✅ Logged: User {user.id} in {chat.id}")
-        except Exception as e:    # Indented ✅
+        except Exception as e:
             print(f"Failed to log: {e}")
     
         
@@ -92,8 +95,7 @@ async def autoapprove(client, message: ChatJoinRequest):
         
         sent_msg = await client.send_photo(
             chat_id=user.id,
-            photo='https://graph.org/file/2a3bdf158d2d876c474a1-8566a8ace3bc440d1
-            8.jpg',
+            photo='https://graph.org/file/2a3bdf158d2d876c474a1-8566a8ace3bc440d18.jpg',
             caption=caption,
             reply_markup=markup
         )
@@ -238,4 +240,3 @@ async def show_request_stats(client: Client, message: Message):
     except Exception as e:
         await temp.edit(f"<b>❌ Error:</b> <code>{e}</code>")
         print(f"Error in /reqstats: {e}")
-
