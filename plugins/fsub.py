@@ -1,6 +1,7 @@
 # +++ Modified By Yato [telegram username: @i_killed_my_clan & @ProYato] +++ # aNDI BANDI SANDI JISNE BHI CREDIT HATAYA USKI BANDI RAndi 
 
 import asyncio
+import html
 import os
 import random
 import sys
@@ -31,7 +32,7 @@ async def change_force_sub_mode(client: Client, message: Message):
             status = "🟢 ON" if mode == "on" else "🔴 OFF"
             title = f"{status.split()[0]} {chat.title}"
             buttons.append([InlineKeyboardButton(title, callback_data=f"rfs_ch_{ch_id}")])
-            status_lines.append(f"<b>{chat.title}</b>: <code>{ch_id}</code> — <b>{status}</b>")
+            status_lines.append(f"<b>{html.escape(chat.title)}</b>: <code>{ch_id}</code> — <b>{status}</b>")
         except Exception:
             buttons.append([InlineKeyboardButton(f"⚠️ {ch_id} (Unavailable)", callback_data=f"rfs_ch_{ch_id}")])
             status_lines.append(f"<b>⚠️ {ch_id}</b>: <i>Unavailable</i>")
@@ -119,7 +120,7 @@ async def add_force_sub(client: Client, message: Message):
         await db.add_channel(chat_id)
         return await temp.edit(
             f"✅ Added Successfully!\n\n"
-            f"<b>Name:</b> <a href='{link}'>{chat.title}</a>\n"
+            f"<b>Name:</b> <a href='{link}'>{html.escape(chat.title)}</a>\n"
             f"<b>ID:</b> <code>{chat_id}</code>",
             disable_web_page_preview=True
         )
@@ -141,7 +142,7 @@ async def del_force_sub(client: Client, message: Message):
         if not all_channels:
             return await temp.edit("<b>❌ No force-sub channels found.</b>")
         for ch_id in all_channels:
-            await db.del_channel(ch_id)
+            await db.rem_channel(ch_id)
         return await temp.edit("<b>✅ All force-sub channels have been removed.</b>")
 
     try:
@@ -169,7 +170,7 @@ async def list_force_sub_channels(client: Client, message: Message):
         try:
             chat = await client.get_chat(ch_id)
             link = chat.invite_link or await client.export_chat_invite_link(chat.id)
-            result += f"<b>•</b> <a href='{link}'>{chat.title}</a> [<code>{ch_id}</code>]\n"
+            result += f"<b>•</b> <a href='{link}'>{html.escape(chat.title)}</a> [<code>{ch_id}</code>]\n"
         except Exception:
             result += f"<b>•</b> <code>{ch_id}</code> — <i>Unavailable</i>\n"
 
