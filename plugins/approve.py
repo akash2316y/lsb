@@ -6,6 +6,7 @@ from pyrogram.types import Message, User, ChatJoinRequest, InlineKeyboardMarkup,
 from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParticipant
 from database.database import set_approval_off, is_approval_off
 from helper_func import *
+from config import LOG_CHANNEL
 
 # Default settings
 APPROVAL_WAIT_TIME = 1  # seconds 
