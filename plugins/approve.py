@@ -1,3 +1,4 @@
+import html
 import os
 import asyncio
 from datetime import datetime
@@ -6,7 +7,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, User, ChatJoinRequest, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParticipant
-from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels
+from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels, get_channels
 from helper_func import is_owner_or_admin
 from config import LOG_CHANNEL
 
@@ -144,51 +145,42 @@ async def approve_on_command(client, message: Message):
 
 @Client.on_message(filters.command("total") & is_owner_or_admin)
 async def show_channel_stats(client: Client, message: Message):
-    """Show total channels and subscriptions with names"""
+    """Show all chats added via /addchat"""
     temp = await message.reply("<b><i>📊 ᴡᴀɪᴛ ᴀ sᴇᴄ.. ʟᴏᴀᴅɪɴɢ ᴅᴀᴛᴀ...</i></b>", quote=True)
-    
+
     try:
-        fsub_channels = await get_fsub_channels()
-        
-        if not fsub_channels:
-            return await temp.edit("<b>❌ No force-sub channels found.</b>")
-        
-        stats = await get_channel_stats()
-        
-        result = f"<b>📊 CHANNEL STATISTICS</b>\n\n"
-        result += f"<b>Total Channels:</b> <code>{len(fsub_channels)}</code>\n"
-        result += f"<b>Total Subscriptions:</b> <code>{sum(stats.values())}</code>\n\n"
+        channels = await get_channels()
+
+        if not channels:
+            return await temp.edit("<b>❌ No chats added yet. Use /addchat to add one.</b>")
+
+        result = f"<b>📊 ADDED CHATS</b>\n\n"
+        result += f"<b>Total Chats:</b> <code>{len(channels)}</code>\n\n"
         result += "<b>━━━━━━━━━━━━━━━━━━━━━━</b>\n\n"
-        result += "<b>📋 Channel Details:</b>\n\n"
-        
-        total_subs = 0
-        for idx, channel_id in enumerate(fsub_channels, 1):
+
+        for idx, channel_id in enumerate(channels, 1):
             try:
                 chat = await client.get_chat(channel_id)
-                channel_name = chat.title
+                channel_name = html.escape(chat.title)
                 channel_link = chat.invite_link or f"https://t.me/c/{str(channel_id)[4:]}"
-                
-                sub_count = stats.get(channel_id, 0)
-                total_subs += sub_count
-                
+
                 result += f"<b>{idx}.</b> <a href='{channel_link}'>{channel_name}</a>\n"
-                result += f"    <code>Channel ID:</code> <code>{channel_id}</code>\n"
-                result += f"    <code>Subscriptions:</code> <code>{sub_count}</code>\n\n"
-                
-            except Exception as e:
+                result += f"    <code>Chat ID:</code> <code>{channel_id}</code>\n\n"
+
+            except Exception:
                 result += f"<b>{idx}.</b> <code>{channel_id}</code> — <i>⚠️ Error loading</i>\n\n"
-        
+
         result += "<b>━━━━━━━━━━━━━━━━━━━━━━</b>\n"
-        result += f"<b>✅ Total:</b> <code>{len(fsub_channels)} Channels | {total_subs} Subscriptions</code>"
-        
+        result += f"<b>✅ Total:</b> <code>{len(channels)} Chats</code>"
+
         await temp.edit(
             result,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]])
         )
-        
+
     except Exception as e:
-        await temp.edit(f"<b>❌ Error loading statistics:</b>\n<code>{e}</code>")
+        await temp.edit(f"<b>❌ Error loading chat list:</b>\n<code>{e}</code>")
         print(f"Error in /total command: {e}")
 
 @Client.on_message(filters.command("reqstats") & is_owner_or_admin)
