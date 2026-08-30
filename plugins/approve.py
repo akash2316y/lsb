@@ -51,8 +51,9 @@ async def autoapprove(client, message: ChatJoinRequest):
         pass  
   
     # Move this inside the async function
-    await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
-# ✅ TRACK APPROVED REQUEST
+await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
+    
+    # ✅ TRACK APPROVED REQUEST
     await save_approved_request(
         channel_id=chat.id,
         user_id=user.id,
@@ -60,14 +61,13 @@ async def autoapprove(client, message: ChatJoinRequest):
     )
     print(f"✅ Tracked approval - User {user.id} approved in channel {chat.id}")
 
-    
     if LOG_CHANNEL:
-    try:
-        user_name = user.first_name or "User"
-        if user.last_name:
-            user_name = f"{user_name} {user.last_name}"
-        
-        log_text = f"""<b>✅ USER APPROVED</b>
+        try:                      # Indented ✅
+            user_name = user.first_name or "User"
+            if user.last_name:
+                user_name = f"{user_name} {user.last_name}"
+            
+            log_text = f"""<b>✅ USER APPROVED</b>
 
 <b>👤 Name:</b> {user_name}
 <b>🆔 User ID:</b> <code>{user.id}</code>
@@ -77,11 +77,12 @@ async def autoapprove(client, message: ChatJoinRequest):
 
 ━━━━━━━━━━━━━━━━━━━━━━
 <b>⏰ Time:</b> {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"""
-        
-        await client.send_message(LOG_CHANNEL, log_text, parse_mode=ParseMode.HTML)
-        print(f"✅ Logged: User {user.id} in {chat.id}")
-    except Exception as e:
-        print(f"Failed to log: {e}")
+            
+            await client.send_message(LOG_CHANNEL, log_text, parse_mode=ParseMode.HTML)
+            print(f"✅ Logged: User {user.id} in {chat.id}")
+        except Exception as e:    # Indented ✅
+            print(f"Failed to log: {e}")
+    
         
     if APPROVED == "on":
         invite_link = await client.export_chat_invite_link(chat.id)
@@ -93,7 +94,8 @@ async def autoapprove(client, message: ChatJoinRequest):
         
         sent_msg = await client.send_photo(
             chat_id=user.id,
-            photo='https://graph.org/file/2a3bdf158d2d876c474a1-8566a8ace3bc440d18.jpg',
+            photo='https://graph.org/file/2a3bdf158d2d876c474a1-8566a8ace3bc440d1
+            8.jpg',
             caption=caption,
             reply_markup=markup
         )
