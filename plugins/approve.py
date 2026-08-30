@@ -7,6 +7,8 @@ from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParti
 from database.database import set_approval_off, is_approval_off
 from helper_func import *
 from config import LOG_CHANNEL
+from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels
+
 
 # Default settings
 APPROVAL_WAIT_TIME = 1  # seconds 
@@ -50,7 +52,15 @@ async def autoapprove(client, message: ChatJoinRequest):
   
     # Move this inside the async function
     await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
+# ✅ TRACK APPROVED REQUEST
+    await save_approved_request(
+        channel_id=chat.id,
+        user_id=user.id,
+        username=user.username or f"{user.first_name} {user.last_name}".strip()
+    )
+    print(f"✅ Tracked approval - User {user.id} approved in channel {chat.id}")
 
+    
     if LOG_CHANNEL:
     try:
         user_name = user.first_name or "User"
