@@ -57,7 +57,8 @@ CHANNELS_TXT = """<b>››</b> """
 CMD_TXT = """<b>›› ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs</b>
 
 <b><u>Gᴇɴᴇʀᴀʟ</u></b>
-<blockquote>/start — Sᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ</blockquote>
+<blockquote>/start — Sᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ
+/cmd — Sʜᴏᴡ ᴄᴏᴍᴍᴀɴᴅs ʟɪsᴛ</blockquote>
 
 <b><u>Sᴛᴀᴛs & Bʀᴏᴀᴅᴄᴀsᴛ</u></b>
 <blockquote>/status — Bᴏᴛ ᴜᴘᴛɪᴍᴇ, ᴘɪɴɢ & ᴜsᴇʀ ᴄᴏᴜɴᴛ
@@ -81,11 +82,15 @@ CMD_TXT = """<b>›› ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs</b>
 /fsubs — Lɪsᴛ ꜰᴏʀᴄᴇ-sᴜʙ ᴄʜᴀɴɴᴇʟs
 /req — Tᴏɢɢʟᴇ ʀᴇǫᴜᴇsᴛ ᴍᴏᴅᴇ</blockquote>
 
-<b><u>Aᴜᴛᴏ Aᴘᴘʀᴏᴠᴇ</u></b>
+<b><u>Aᴜᴛᴏ Aᴘᴘʀᴏᴠᴇ & Lᴏɢɢɪɴɢ</u></b>
 <blockquote>/approveon — Tᴜʀɴ ᴏɴ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ꜰᴏʀ ᴀ ᴄʜᴀɴɴᴇʟ
 /approveoff — Tᴜʀɴ ᴏꜰꜰ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ꜰᴏʀ ᴀ ᴄʜᴀɴɴᴇʟ
 /reqtime — Sᴇᴛ ᴀᴜᴛᴏ-ᴀᴘᴘʀᴏᴠᴇ ᴅᴇʟᴀʏ (sᴇᴄᴏɴᴅs)
 /reqmode — Tᴏɢɢʟᴇ ʀᴇǫᴜᴇsᴛ ᴍᴏᴅᴇ ᴏɴ/ᴏꜰꜰ</blockquote>
+
+<b><u>Sᴛᴀᴛɪsᴛɪᴄs & Rᴇᴘᴏʀᴛs (ᴏᴡɴᴇʀ/ᴀᴅᴍɪɴ ᴏɴʟʏ)</u></b>
+<blockquote>/total — Sʜᴏᴡ ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴡɪᴛʜ sᴜʙsᴄʀɪᴘᴛɪᴏɴ ᴄᴏᴜɴᴛs
+/reqstats — Sʜᴏᴡ ᴀᴘᴘʀᴏᴠᴀʟ ʙʀᴇᴀᴋᴅᴏᴡɴ ʙʏ ᴄʜᴀɴɴᴇʟ</blockquote>
 
 <b><u>Aᴅᴍɪɴs</u></b>
 <blockquote>/addadmin — Aᴅᴅ ᴀɴ ᴀᴅᴍɪɴ (ᴏᴡɴᴇʀ ᴏɴʟʏ)
@@ -94,9 +99,7 @@ CMD_TXT = """<b>›› ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs</b>
 
 <b><u>Sᴛᴀʀᴛ Mᴇssᴀɢᴇ Bᴜᴛᴛᴏɴs (ᴏᴡɴᴇʀ ᴏɴʟʏ)</u></b>
 <blockquote>/addbutton {name} {link} ... — Aᴅᴅ ᴀ ʙᴜᴛᴛᴏɴ ʀᴏᴡ ᴛᴏ ᴛʜᴇ sᴛᴀʀᴛ ᴍᴇssᴀɢᴇ
-/removebutton — Sʜᴏᴡ/ʀᴇᴍᴏᴠᴇ ʙᴜᴛᴛᴏɴ ʀᴏᴡs</blockquote>
-
-<b>/cmd — Sʜᴏᴡ ᴛʜɪs ʟɪsᴛ</b>"""
+/removebutton — Sʜᴏᴡ/ʀᴇᴍᴏᴠᴇ ʙᴜᴛᴛᴏɴ ʀᴏᴡs</blockquote>"""
 
 #--- ---- ---- --- --- --- - -- -  - - - - - - - - - - - --  - -
 # Default
