@@ -49,7 +49,29 @@ async def autoapprove(client, message: ChatJoinRequest):
   
     # Move this inside the async function
     await client.approve_chat_join_request(chat_id=chat.id, user_id=user.id)
-    
+
+    if LOG_CHANNEL:
+    try:
+        user_name = user.first_name or "User"
+        if user.last_name:
+            user_name = f"{user_name} {user.last_name}"
+        
+        log_text = f"""<b>✅ USER APPROVED</b>
+
+<b>👤 Name:</b> {user_name}
+<b>🆔 User ID:</b> <code>{user.id}</code>
+<b>📝 Username:</b> @{user.username if user.username else "N/A"}
+<b>📢 Channel:</b> {chat.title}
+<b>🔗 Channel ID:</b> <code>{chat.id}</code>
+
+━━━━━━━━━━━━━━━━━━━━━━
+<b>⏰ Time:</b> {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"""
+        
+        await client.send_message(LOG_CHANNEL, log_text, parse_mode=ParseMode.HTML)
+        print(f"✅ Logged: User {user.id} in {chat.id}")
+    except Exception as e:
+        print(f"Failed to log: {e}")
+        
     if APPROVED == "on":
         invite_link = await client.export_chat_invite_link(chat.id)
         buttons = [
