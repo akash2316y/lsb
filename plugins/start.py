@@ -168,7 +168,7 @@ async def start_command(client: Bot, message: Message):
             )
 
             note_msg = await message.reply_text(
-                "",
+                "<i>⚠️ Note: This link will expire in 10 minutes.</i>",
                 parse_mode=ParseMode.HTML
             )
 
@@ -179,7 +179,7 @@ async def start_command(client: Bot, message: Message):
 
         except Exception as e:
             await message.reply_text(
-                "",
+                "<b>❌ Something went wrong while generating your link. Please try again.</b>",
                 parse_mode=ParseMode.HTML
             )
             print(f"Decoding error: {e}")
