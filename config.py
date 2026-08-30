@@ -12,7 +12,8 @@ API_HASH = os.environ.get("API_HASH", "")
 
 # Channel where user links are stored
 DATABASE_CHANNEL = int(os.environ.get("DATABASE_CHANNEL", ""))
-
+#approve logs
+LOG_CHANNEL = -1001234567890
 # Main
 OWNER_ID = int(os.environ.get("OWNER_ID", "")) #7889947993 7932127170
 PORT = int(os.environ.get("PORT", 8080))
