@@ -7,21 +7,13 @@ from pyrogram.types import Message, User, ChatJoinRequest, InlineKeyboardMarkup,
 from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, ChatAdminRequired, RPCError, UserNotParticipant
 from database.database import set_approval_off, is_approval_off, save_approved_request, get_channel_stats, get_fsub_channels
-from helper_func import is_owner_or_admin, UserClient
+from helper_func import is_owner_or_admin
 from config import LOG_CHANNEL
 
 # Default settings
 APPROVAL_WAIT_TIME = 1  # seconds 
 AUTO_APPROVE_ENABLED = False  # Toggle for enabling/disabling auto approval
-user_client = None
 APPROVED = "on"  # Default setting for approval messages
-
-async def get_user_client():
-    global user_client
-    if user_client is None:
-        user_client = UserClient("userbot", session_string=USER_SESSION, api_id=APP_ID, api_hash=API_HASH)
-        await user_client.start()
-    return user_client
 
 @Client.on_chat_join_request((filters.group | filters.channel) & filters.chat(CHAT_ID) if CHAT_ID else (filters.group | filters.channel))  
 async def autoapprove(client, message: ChatJoinRequest):  
