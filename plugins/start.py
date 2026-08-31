@@ -301,7 +301,11 @@ async def check_subscription_status(client: Client, user_id: int, fsub_channels:
                 invite = await client.create_chat_invite_link(
                     chat_id=chat_id,
                     creates_join_request=True,
-                    expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
+                    # NOTE: use datetime.now() (local, naive), not utcnow(). Pyrogram
+                    # converts this via dt.timestamp(), which treats a naive datetime
+                    # as local time — feeding it a UTC value on a non-UTC server shifts
+                    # the expiry into the past and Telegram rejects it as EXPIRE_DATE_INVALID.
+                    expire_date=datetime.now() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
                 )
                 link = invite.invite_link
                 text = f"• ʀᴇǫᴜᴇsᴛ {name} •"
@@ -311,7 +315,7 @@ async def check_subscription_status(client: Client, user_id: int, fsub_channels:
                 else:
                     invite = await client.create_chat_invite_link(
                         chat_id=chat_id,
-                        expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
+                        expire_date=datetime.now() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
                     )
                     link = invite.invite_link
                 text = f"• ᴊᴏɪɴ {name} •"
@@ -381,7 +385,8 @@ async def not_joined(client: Client, message: Message):
                             invite = await client.create_chat_invite_link(
                                 chat_id=chat_id,
                                 creates_join_request=want_request_link,
-                                expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
+                                # datetime.now() on purpose — see note above in check_subscription_status.
+                                expire_date=datetime.now() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
                             )
                             link = invite.invite_link
                             await save_invite_link(chat_id, link, want_request_link)
