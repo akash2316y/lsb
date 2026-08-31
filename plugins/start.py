@@ -358,23 +358,33 @@ async def not_joined(client: Client, message: Message):
 
                     name = data.title
 
-                    # Generate proper invite link based on the mode
-                    if mode == "on" and not data.username:
-                        invite = await client.create_chat_invite_link(
-                            chat_id=chat_id,
-                            creates_join_request=True,
-                            expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
-                            )
-                        link = invite.invite_link
-
+                    if data.username:
+                        link = f"https://t.me/{data.username}"
                     else:
-                        if data.username:
-                            link = f"https://t.me/{data.username}"
+                        want_request_link = (mode == "on")
+
+                        # Reuse an existing, still-fresh invite link instead of
+                        # generating a brand new one on every single /start —
+                        # repeated create_chat_invite_link calls can get
+                        # throttled by Telegram, which used to fail silently.
+                        cached = await get_current_invite_link(chat_id)
+                        link_created_time = await get_link_creation_time(chat_id) if cached else None
+                        link_age_ok = (
+                            link_created_time
+                            and FSUB_LINK_EXPIRY
+                            and (datetime.utcnow() - link_created_time).total_seconds() < FSUB_LINK_EXPIRY
+                        )
+
+                        if cached and cached["is_request"] == want_request_link and link_age_ok:
+                            link = cached["invite_link"]
                         else:
                             invite = await client.create_chat_invite_link(
                                 chat_id=chat_id,
-                                expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None)
+                                creates_join_request=want_request_link,
+                                expire_date=datetime.utcnow() + timedelta(seconds=FSUB_LINK_EXPIRY) if FSUB_LINK_EXPIRY else None
+                            )
                             link = invite.invite_link
+                            await save_invite_link(chat_id, link, want_request_link)
 
                     buttons.append([InlineKeyboardButton(text=name, url=link)])
                     count += 1
@@ -382,10 +392,10 @@ async def not_joined(client: Client, message: Message):
 
                 except Exception as e:
                     print(f"Error with chat {chat_id}: {e}")
-                    return #await temp.edit(
-                        #f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @rohit_1888</i></b>\n"
-                        #f"<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>"
-                    #)
+                    return await message.reply_text(
+                        "<b>❌ Couldn't load the subscription channels right now. Please try /start again in a moment.</b>",
+                        parse_mode=ParseMode.HTML
+                    )
 
         # Retry Button
         try:
@@ -413,6 +423,11 @@ async def not_joined(client: Client, message: Message):
 
     except Exception as e:
         print(f"Final Error: {e}")
+        await message.reply_text(
+            "<b>❌ Something went wrong. Please try /start again.</b>",
+            parse_mode=ParseMode.HTML
+        )
+
 
 @Bot.on_callback_query(filters.regex("close"))
 async def close_callback(client: Bot, callback_query):
