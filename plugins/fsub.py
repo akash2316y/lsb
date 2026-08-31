@@ -12,13 +12,13 @@ from config import *
 from helper_func import *
 from database.db_fsub import *
 
-@Bot.on_message(filters.command('req') & filters.private & is_owner_or_admin)
-async def change_force_sub_mode(client: Client, message: Message):
-    temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
+async def build_reqmode_menu(client: Client):
+    """Build the buttons + status text for the /req channel-mode toggle menu.
+    Returns (None, None) if there are no force-sub channels configured."""
     channels = await db.show_channels()
 
     if not channels:
-        return await temp.edit("<b>❌ No force-sub channels found.</b>")
+        return None, None
 
     buttons = []
     status_lines = []
@@ -38,8 +38,43 @@ async def change_force_sub_mode(client: Client, message: Message):
 
     buttons.append([InlineKeyboardButton("Close ✖️", callback_data="close")])
 
-    status_text = "\n".join(status_lines)
+    return buttons, "\n".join(status_lines)
+
+
+@Bot.on_message(filters.command('req') & filters.private & is_owner_or_admin)
+async def change_force_sub_mode(client: Client, message: Message):
+    temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
+    buttons, status_text = await build_reqmode_menu(client)
+
+    if buttons is None:
+        return await temp.edit("<b>❌ No force-sub channels found.</b>")
+
     await temp.edit(
+        f"<b>⚡ Select a channel to toggle Force-Sub Mode:</b>\n\n<b>Current Request FSub Status:</b>\n{status_text}",
+        reply_markup=InlineKeyboardMarkup(buttons),
+        disable_web_page_preview=True
+    )
+
+
+# This handler was missing entirely — the /req menu built buttons with this
+# callback_data, but nothing ever listened for it, so tapping a channel did nothing.
+@Bot.on_callback_query(filters.regex(r"^rfs_ch_(-?\d+)$") & is_owner_or_admin)
+async def toggle_channel_req_mode(client: Client, callback_query: CallbackQuery):
+    channel_id = int(callback_query.matches[0].group(1))
+
+    current_mode = await db.get_channel_mode(channel_id)
+    new_mode = "off" if current_mode == "on" else "on"
+    await db.set_channel_mode(channel_id, new_mode)
+
+    await callback_query.answer(
+        f"Request Force-Sub turned {'ON ✅' if new_mode == 'on' else 'OFF 🔴'} for this channel."
+    )
+
+    buttons, status_text = await build_reqmode_menu(client)
+    if buttons is None:
+        return await callback_query.message.edit("<b>❌ No force-sub channels found.</b>")
+
+    await callback_query.message.edit(
         f"<b>⚡ Select a channel to toggle Force-Sub Mode:</b>\n\n<b>Current Request FSub Status:</b>\n{status_text}",
         reply_markup=InlineKeyboardMarkup(buttons),
         disable_web_page_preview=True
