@@ -55,6 +55,23 @@ async def build_start_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(keyboard)
 
 
+async def is_subscribed(client: Client, user_id: int) -> bool:
+    """Return True if user_id has joined every configured FSub channel."""
+    try:
+        fsub_channels = await db.show_channels()
+    except Exception as e:
+        print(f"Error fetching fsub channels: {e}")
+        return True  # fail open so a DB hiccup doesn't lock everyone out
+
+    if not fsub_channels:
+        return True
+
+    for chat_id in fsub_channels:
+        if not await is_sub(client, user_id, chat_id):
+            return False
+    return True
+
+
 @Bot.on_message(filters.command('start') & filters.private)
 async def start_command(client: Bot, message: Message):
     user_id = message.from_user.id
